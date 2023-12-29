@@ -44,7 +44,7 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 The Git repository contains the following top directories:
 
 - **apps** dir contains Helm releases with a custom configuration per cluster
-- **infrastructure** dir contains common infra tools such as ingress-nginx and cert-manager
+- **infrastructure** dir contains common infra tools such as ingress-nginx and agnoes-system
 - **clusters** dir contains the Flux configuration per cluster
 
 ```
@@ -165,7 +165,7 @@ The infrastructure is structured into:
 │   ├── network-policies.yaml
 │   └── kustomization.yaml
 └── controllers
-    ├── cert-manager.yaml
+    ├── agnoes-system.yaml
     ├── ingress-nginx.yaml
     ├── weave-gitops.yaml
     └── kustomization.yaml
@@ -177,18 +177,18 @@ In **infrastructure/controllers/** dir we have the Flux `HelmRepository` and `He
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: cert-manager
-  namespace: cert-manager
+  name: agnoes-system
+  namespace: agnoes-system
 spec:
   interval: 30m
   chart:
     spec:
-      chart: cert-manager
+      chart: agnoes-system
       version: "1.x"
       sourceRef:
         kind: HelmRepository
-        name: cert-manager
-        namespace: cert-manager
+        name: agnoes-system
+        namespace: agnoes-system
       interval: 12h
   values:
     installCRDs: true
@@ -200,7 +200,7 @@ If the new chart version that matches the `1.x` semver range is found, Flux will
 In **infrastructure/configs/** dir we have Kubernetes custom resources, such as the Let's Encrypt issuer:
 
 ```yaml
-apiVersion: cert-manager.io/v1
+apiVersion: agnoes-system.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt
@@ -314,7 +314,7 @@ Watch for the Helm releases being installed on staging:
 $ watch flux get helmreleases --all-namespaces
 
 NAMESPACE    	NAME         	REVISION	SUSPENDED	READY	MESSAGE 
-cert-manager 	cert-manager 	v1.11.0 	False    	True 	Release reconciliation succeeded
+agnoes-system 	agnoes-system 	v1.11.0 	False    	True 	Release reconciliation succeeded
 flux-system  	weave-gitops 	4.0.12   	False    	True 	Release reconciliation succeeded
 ingress-nginx	ingress-nginx	4.4.2   	False    	True 	Release reconciliation succeeded
 podinfo      	podinfo      	6.3.0   	False    	True 	Release reconciliation succeeded
