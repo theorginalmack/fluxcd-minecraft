@@ -3,8 +3,6 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: agones
-  labels:
-    toolkit.fluxcd.io/tenant: sre-team
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
@@ -21,7 +19,6 @@ metadata:
   name: agones
   namespace: agones
 spec:
-  interval: 30m
   chart:
     spec:
       chart: agones
@@ -30,6 +27,7 @@ spec:
         name: agones
         namespace: agones
       interval: 12h
+  interval: 30m
   values:
     agones:
       allocator:
@@ -41,6 +39,6 @@ spec:
           serviceType: ClusterIP
         udp:
           serviceType: ClusterIP
-     gameservers:
+    gameservers:
       namespaces:
         - shulker-system
