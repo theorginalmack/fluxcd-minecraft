@@ -1,8 +1,8 @@
-# flux2-kustomize-helm-example
+# fluxcd-minecraft
 
-[![test](https://github.com/theorginalmack/flux2-kustomize-helm-example/workflows/test/badge.svg)](https://github.com/theorginalmack/flux2-kustomize-helm-example/actions)
-[![e2e](https://github.com/theorginalmack/flux2-kustomize-helm-example/workflows/e2e/badge.svg)](https://github.com/theorginalmack/flux2-kustomize-helm-example/actions)
-[![license](https://img.shields.io/github/license/fluxcd/flux2-kustomize-helm-example.svg)](https://github.com/theorginalmack/flux2-kustomize-helm-example/blob/main/LICENSE)
+[![test](https://github.com/theorginalmack/fluxcd-minecraft/workflows/test/badge.svg)](https://github.com/theorginalmack/fluxcd-minecraft/actions)
+[![e2e](https://github.com/theorginalmack/fluxcd-minecraft/workflows/e2e/badge.svg)](https://github.com/theorginalmack/fluxcd-minecraft/actions)
+[![license](https://img.shields.io/github/license/fluxcd/fluxcd-minecraft.svg)](https://github.com/theorginalmack/fluxcd-minecraft/blob/main/LICENSE)
 
 For this example we assume a scenario with two clusters: staging and production.
 The end goal is to leverage Flux and Kustomize to manage both clusters while minimizing duplicated declarations.
@@ -71,35 +71,35 @@ The apps configuration is structured into:
 ```
 ./apps/
 ├── base
-│   └── podinfo
+│   └── shulker
 │       ├── kustomization.yaml
 │       ├── namespace.yaml
 │       ├── release.yaml
 │       └── repository.yaml
 ├── production
 │   ├── kustomization.yaml
-│   └── podinfo-patch.yaml
+│   └── shulker-patch.yaml
 └── staging
     ├── kustomization.yaml
-    └── podinfo-patch.yaml
+    └── shulker-patch.yaml
 ```
 
-In **apps/base/podinfo/** dir we have a Flux `HelmRelease` with common values for both clusters:
+In **apps/base/shulker/** dir we have a Flux `HelmRelease` with common values for both clusters:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: podinfo
-  namespace: podinfo
+  name: shulker
+  namespace: shulker
 spec:
-  releaseName: podinfo
+  releaseName: shulker
   chart:
     spec:
-      chart: podinfo
+      chart: shulker
       sourceRef:
         kind: HelmRepository
-        name: podinfo
+        name: shulker
         namespace: flux-system
   interval: 50m
   values:
@@ -114,7 +114,7 @@ In **apps/staging/** dir we have a Kustomize patch with the staging specific val
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: podinfo
+  name: shulker
 spec:
   chart:
     spec:
@@ -124,7 +124,7 @@ spec:
   values:
     ingress:
       hosts:
-        - host: podinfo.staging
+        - host: shulker.staging
 ```
 
 Note that with ` version: ">=1.0.0-alpha"` we configure Flux to automatically upgrade
@@ -136,8 +136,8 @@ In **apps/production/** dir we have a Kustomize patch with the production specif
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: podinfo
-  namespace: podinfo
+  name: shulker
+  namespace: shulker
 spec:
   chart:
     spec:
@@ -145,7 +145,7 @@ spec:
   values:
     ingress:
       hosts:
-        - host: podinfo.production
+        - host: shulker.production
 ```
 
 Note that with ` version: ">=1.0.0"` we configure Flux to automatically upgrade
@@ -317,7 +317,7 @@ NAMESPACE    	NAME         	REVISION	SUSPENDED	READY	MESSAGE
 agones 	agones 	v1.11.0 	False    	True 	Release reconciliation succeeded
 flux-system  	weave-gitops 	4.0.12   	False    	True 	Release reconciliation succeeded
 ingress-nginx	ingress-nginx	4.4.2   	False    	True 	Release reconciliation succeeded
-podinfo      	podinfo      	6.3.0   	False    	True 	Release reconciliation succeeded
+shulker      	shulker      	6.3.0   	False    	True 	Release reconciliation succeeded
 ```
 
 Verify that the demo app can be accessed via ingress:
@@ -325,9 +325,9 @@ Verify that the demo app can be accessed via ingress:
 ```console
 $ kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8080:80 &
 
-$ curl -H "Host: podinfo.staging" http://localhost:8080
+$ curl -H "Host: shulker.staging" http://localhost:8080
 {
-  "hostname": "podinfo-59489db7b5-lmwpn",
+  "hostname": "shulker-59489db7b5-lmwpn",
   "version": "6.2.3"
 }
 ```

@@ -1,22 +1,22 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: podinfo
-  namespace: podinfo
+  name: shulker
+  namespace: shulker
 spec:
-  releaseName: podinfo
+  releaseName: shulker
   chart:
     spec:
-      chart: podinfo
+      chart: shulker
       sourceRef:
         kind: HelmRepository
-        name: podinfo
+        name: shulker
   interval: 50m
   install:
     remediation:
       retries: 3
   # Default values
-  # https://github.com/stefanprodan/podinfo/blob/master/charts/podinfo/values.yaml
+  # https://github.com/stefanprodan/shulker/blob/master/charts/shulker/values.yaml
   values:
     redis:
       enabled: true
