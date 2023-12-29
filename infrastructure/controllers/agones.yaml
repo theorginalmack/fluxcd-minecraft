@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: agnoes-system
+  name: agones
   labels:
     toolkit.fluxcd.io/tenant: sre-team
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: agnoes-system
-  namespace: agnoes-system
+  name: agones
+  namespace: agones
 spec:
   interval: 24h
   url: https://agones.dev/chart/stable
@@ -18,17 +18,17 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: agnoes-system
-  namespace: agnoes-system
+  name: agones
+  namespace: agones
 spec:
   interval: 30m
   chart:
     spec:
-      chart: agnoes-system
+      chart: agones
       sourceRef:
         kind: HelmRepository
-        name: agnoes-system
-        namespace: agnoes-system
+        name: agones
+        namespace: agones
       interval: 12h
   values:
     agones:
