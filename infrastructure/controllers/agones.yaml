@@ -41,6 +41,6 @@ spec:
           serviceType: ClusterIP
         udp:
           serviceType: ClusterIP
-    # gameservers:
-    #   namespaces:
-    #     - shulker-system
+     gameservers:
+      namespaces:
+        - shulker-system
